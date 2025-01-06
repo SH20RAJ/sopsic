@@ -1,68 +1,118 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
+# Sopsic
 
-## Getting Started
+Sopsic is a music streaming website inspired by JioSaavn and Spotify. It provides a sleek user interface for users to stream music and download tracks directly from the JioSaavn library using the [JioSaavn API](https://saavn.dev/docs#description/introduction).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- Stream millions of songs from the JioSaavn library.
+- Download music directly to your device.
+- User interface inspired by JioSaavn and Spotify for a modern and intuitive experience.
+- Search for songs, albums, artists, and playlists.
+- Create and manage custom playlists.
+
+---
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 (App Router) with JavaScript
+- **Backend**: JioSaavn API integration
+- **Styling**: TailwindCSS for a responsive and visually appealing UI
+- **State Management**: Context API or Zustand (optional, depending on complexity)
+- **Deployment**: Vercel or Netlify
+
+---
+
+## Installation and Setup
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/sopsic.git
+   cd sopsic
+   ```
+
+2. **Install Dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Environment Variables**:
+
+   Create a `.env.local` file in the root directory and add the following variables:
+
+   ```env
+   JIOSAAVN_API_BASE_URL=https://saavn.dev/api
+   NEXT_PUBLIC_API_KEY=your_api_key_here
+   ```
+
+4. **Run the Development Server**:
+
+   ```bash
+   npm run dev
+   ```
+
+   The website will be available at `http://localhost:3000`.
+
+5. **Build for Production**:
+
+   ```bash
+   npm run build
+   npm start
+   ```
+
+---
+
+## Folder Structure
+
+```plaintext
+sopsic/
+├── app/
+│   ├── layout.js          # App layout
+│   ├── page.js            # Homepage
+│   └── music/             # Music-related routes
+│       ├── [id]/          # Dynamic routes for song, album, or artist
+│       └── download.js    # Download functionality
+├── components/            # Reusable UI components
+├── styles/                # Global styles and Tailwind configuration
+├── utils/                 # Helper functions and API utilities
+├── public/                # Static assets
+├── .env.local             # Environment variables
+├── package.json           # Dependencies and scripts
+└── README.md              # Project documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-## Cloudflare integration
+## API Integration
 
-Besides the `dev` script mentioned above `c3` has added a few extra scripts that allow you to integrate the application with the [Cloudflare Pages](https://pages.cloudflare.com/) environment, these are:
-  - `pages:build` to build the application for Pages using the [`@cloudflare/next-on-pages`](https://github.com/cloudflare/next-on-pages) CLI
-  - `preview` to locally preview your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
-  - `deploy` to deploy your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
+This project integrates the [JioSaavn API](https://saavn.dev/docs) for fetching music data. All API requests are made through server-side functions to ensure security and efficiency.
 
-> __Note:__ while the `dev` script is optimal for local development you should preview your Pages application as well (periodically or before deployments) in order to make sure that it can properly work in the Pages environment (for more details see the [`@cloudflare/next-on-pages` recommended workflow](https://github.com/cloudflare/next-on-pages/blob/main/internal-packages/next-dev/README.md#recommended-development-workflow))
+Example API utility:
 
-### Bindings
+```javascript
+const fetchSongs = async (query) => {
+  const res = await fetch(`${process.env.JIOSAAVN_API_BASE_URL}/search?song=${query}`);
+  const data = await res.json();
+  return data;
+};
+```
 
-Cloudflare [Bindings](https://developers.cloudflare.com/pages/functions/bindings/) are what allows you to interact with resources available in the Cloudflare Platform.
+---
 
-You can use bindings during development, when previewing locally your application and of course in the deployed application:
+## Contributing
 
-- To use bindings in dev mode you need to define them in the `next.config.js` file under `setupDevBindings`, this mode uses the `next-dev` `@cloudflare/next-on-pages` submodule. For more details see its [documentation](https://github.com/cloudflare/next-on-pages/blob/05b6256/internal-packages/next-dev/README.md).
+Contributions are welcome! If you'd like to contribute, please follow these steps:
 
-- To use bindings in the preview mode you need to add them to the `pages:preview` script accordingly to the `wrangler pages dev` command. For more details see its [documentation](https://developers.cloudflare.com/workers/wrangler/commands/#dev-1) or the [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes with clear descriptions.
+4. Submit a pull request.
 
-- To use bindings in the deployed application you will need to configure them in the Cloudflare [dashboard](https://dash.cloudflare.com/). For more details see the  [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
+---
 
-#### KV Example
+## License
 
-`c3` has added for you an example showing how you can use a KV binding.
-
-In order to enable the example:
-- Search for javascript/typescript lines containing the following comment:
-  ```ts
-  // KV Example:
-  ```
-  and uncomment the commented lines below it (also uncomment the relevant imports).
-- Do the same in the `wrangler.toml` file, where
-  the comment is:
-  ```
-  # KV Example:
-  ```
-- If you're using TypeScript run the `cf-typegen` script to update the `env.d.ts` file:
-  ```bash
-  npm run cf-typegen
-  # or
-  yarn cf-typegen
-  # or
-  pnpm cf-typegen
-  # or
-  bun cf-typegen
-  ```
-
-After doing this you can run the `dev` or `preview` script and visit the `/api/hello` route to see the example in action.
-
-Finally, if you also want to see the example work in the deployed application make sure to add a `MY_KV_NAMESPACE` binding to your Pages application in its [dashboard kv bindings settings section](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions#kv_namespace_bindings_section). After having configured it make sure to re-deploy your application.
+This project is licensed under the MIT License. See the LICENSE file for details.
